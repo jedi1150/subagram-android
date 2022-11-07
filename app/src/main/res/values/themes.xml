@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-<!--    <style name="Theme.Subagram" parent="android:Theme.Material.Light.NoActionBar" />-->
     <style name="NightAdjusted.Theme.NumberSystems" parent="@android:style/Theme.Material.Light.NoActionBar">
         <item name="android:windowLightStatusBar" tools:targetApi="23">true</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
@@ -20,9 +19,6 @@
     </style>
 
     <style name="Theme.NumberSystems.Splash" parent="NightAdjusted.Theme.Splash">
-        <item name="android:windowSplashScreenIconBackgroundColor" tools:targetApi="31">
-            @color/purple_500
-        </item>
         <item name="postSplashScreenTheme">@style/Theme.NumberSystems</item>
     </style>
 
