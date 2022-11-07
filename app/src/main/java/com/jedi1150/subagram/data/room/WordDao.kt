@@ -10,9 +10,8 @@ interface WordDao {
     @Query("SELECT * FROM words WHERE uid = :uid LIMIT 1")
     fun get(uid: Long): Word?
 
-    @Transaction
-    @Query("SELECT * FROM words WHERE uid = :uid LIMIT 1")
-    fun getWordWithAnagrams(uid: Long): WordWithAnagrams?
+    @Query("SELECT * FROM words WHERE value = :value LIMIT 1")
+    fun get(value: String): Word?
 
     @Transaction
     @Query("SELECT * FROM words")

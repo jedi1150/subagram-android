@@ -2,12 +2,10 @@ package com.jedi1150.subagram
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -40,7 +38,7 @@ fun SubagramApp() {
             modifier = Modifier.fillMaxSize(),
             topBar = {
                 CenterAlignedTopAppBar(
-                    modifier = Modifier.statusBarsPadding(),
+                    modifier = Modifier.statusBarsPadding().displayCutoutPadding(),
                     navigationIcon = {
                         Crossfade(targetState = currentDestination) { stackEntry ->
                             if (stackEntry?.destination?.route.toString() != Screen.Home.route) {
@@ -50,7 +48,7 @@ fun SubagramApp() {
                                     },
                                 ) {
                                     Icon(
-                                        painter = painterResource(id = R.drawable.ic_arrow_back), contentDescription = null
+                                        imageVector = Icons.Default.ArrowBack, contentDescription = null
                                     )
                                 }
                             }
@@ -83,15 +81,17 @@ fun SubagramApp() {
                     LargeFloatingActionButton(
                         onClick = {
                             navController.navigate(Screen.CreateWord.route) {
+                                launchSingleTop = true
                                 restoreState = true
                             }
                         },
+                        elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation()
                     ) {
                         Icon(imageVector = Icons.Default.Add, contentDescription = null)
                     }
                 }
             },
-            floatingActionButtonPosition = FabPosition.End,
+            floatingActionButtonPosition = FabPosition.Center,
         ) { contentPadding ->
             SubagramNavGraph(
                 homeViewModel = homeViewModel,

@@ -26,35 +26,43 @@ class WordViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            repository.getWord(uid)?.let { wordWithAnagrams ->
+            repository.getWord(uid)?.let { word ->
                 uiState = uiState.copy(
-                    currentWord = wordWithAnagrams.word,
-                    anagrams = repository.getAnagramsByWord(wordWithAnagrams.word),
+                    currentWord = word,
+                    anagrams = repository.getAnagramsByWord(word),
                 )
             }
         }
     }
 
     fun changeInput(value: String) {
-        uiState = uiState.copy(input = value, isError = false)
+        uiState = uiState.copy(input = value, error = null)
     }
 
     fun addAnagram() {
         viewModelScope.launch {
-            if (uiState.input.length < 2) { // Short word
-                uiState = uiState.copy(isError = true)
+            if (uiState.input.isEmpty()) {
+                uiState = uiState.copy(error = AnagramError.EMPTY)
                 return@launch
             }
-            if (uiState.input == uiState.currentWord.value) {   // Same word
-                uiState = uiState.copy(isError = true)
+            if (uiState.input.length < 2) {
+                uiState = uiState.copy(error = AnagramError.SHORT)
+                return@launch
+            }
+            if (uiState.input.contains(" ")) {
+                uiState = uiState.copy(error = AnagramError.NOT_SINGLE)
+                return@launch
+            }
+            if (uiState.input == uiState.currentWord.value) {
+                uiState = uiState.copy(error = AnagramError.SAME)
                 return@launch
             }
             if (!isAnagram(uiState.input, uiState.currentWord)) {
-                uiState = uiState.copy(isError = true)
+                uiState = uiState.copy(error = AnagramError.NOT_ANAGRAM)
                 return@launch
             }
             if (anagramExists(uiState.input, uiState.anagrams.first())) {
-                uiState = uiState.copy(isError = true)
+                uiState = uiState.copy(error = AnagramError.ALREADY_EXISTS)
                 return@launch
             }
 

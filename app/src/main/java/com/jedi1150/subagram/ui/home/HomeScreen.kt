@@ -7,16 +7,17 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.jedi1150.subagram.R
 import com.jedi1150.subagram.data.Word
 import com.jedi1150.subagram.ui.home.components.WordWithAnagramsItem
 import com.jedi1150.subagram.ui.theme.Typography
@@ -27,14 +28,45 @@ fun HomeScreen(
     uiState: HomeUiState = HomeUiState(),
     contentPadding: PaddingValues = PaddingValues(),
     onCreateWordClicked: () -> Unit,
-    onWordClicked: (Word) -> Unit,
+    onDeleteWordClicked: (Word) -> Unit,
+    onWordClick: (Word) -> Unit,
 ) {
+    val layoutDirection = LocalLayoutDirection.current
+
     val wordsWithAnagrams by uiState.words.collectAsState(initial = emptyList())
     val lazyListState = rememberLazyListState()
 
-    Surface(
-        modifier = Modifier.fillMaxSize()
-    ) {
+    var showDeleteWordDialog by remember { mutableStateOf<Word?>(null) }
+
+    showDeleteWordDialog?.let { word ->
+        AlertDialog(
+            onDismissRequest = { showDeleteWordDialog = null },
+            confirmButton = {
+                TextButton(onClick = {
+                    onDeleteWordClicked(word)
+                    showDeleteWordDialog = null
+                }) {
+                    Text(text = stringResource(R.string.delete))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteWordDialog = null }) {
+                    Text(text = stringResource(R.string.cancel))
+                }
+            },
+            icon = {
+                Icon(imageVector = Icons.Default.Delete, contentDescription = null)
+            },
+            title = {
+                Text(text = word.value)
+            },
+            text = {
+                Text(text = stringResource(R.string.delete_word_description))
+            },
+        )
+    }
+
+    Surface(modifier = Modifier.fillMaxSize()) {
         AnimatedContent(
             targetState = wordsWithAnagrams.isNotEmpty(),
             modifier = Modifier.fillMaxSize(),
@@ -45,16 +77,23 @@ fun HomeScreen(
         ) { value ->
             if (value) {
                 LazyColumn(
-                    state = lazyListState,
                     modifier = Modifier.padding(top = contentPadding.calculateTopPadding()),
+                    state = lazyListState,
+                    contentPadding = PaddingValues(
+                        start = WindowInsets.navigationBars.asPaddingValues().calculateStartPadding(layoutDirection) + WindowInsets.displayCutout.asPaddingValues().calculateStartPadding(layoutDirection),
+                        end = WindowInsets.navigationBars.asPaddingValues().calculateEndPadding(layoutDirection) + WindowInsets.displayCutout.asPaddingValues().calculateEndPadding(layoutDirection),
+                        bottom = contentPadding.calculateBottomPadding(),
+                    ),
                 ) {
                     items(wordsWithAnagrams, key = { wordWithAnagrams -> wordWithAnagrams.word.uid }) { wordWithAnagrams ->
                         WordWithAnagramsItem(
                             wordWithAnagrams,
                             modifier = Modifier.animateItemPlacement(),
-                        ) {
-                            onWordClicked(wordWithAnagrams.word)
-                        }
+                            onLongClick = {
+                                showDeleteWordDialog = wordWithAnagrams.word
+                            },
+                            onClick = { onWordClick(wordWithAnagrams.word) },
+                        )
                     }
                 }
             } else {
@@ -67,12 +106,12 @@ fun HomeScreen(
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         Text(
-                            text = "No words yet",
+                            text = stringResource(R.string.no_words_title),
                             modifier = Modifier.padding(8.dp),
                             style = Typography.headlineLarge,
                         )
                         FilledTonalButton(onClick = onCreateWordClicked) {
-                            Text(text = "Add new word")
+                            Text(text = stringResource(R.string.no_words_description))
                         }
                     }
                 }
@@ -86,6 +125,7 @@ fun HomeScreen(
 private fun PreviewMainScreen() {
     HomeScreen(
         onCreateWordClicked = {},
-        onWordClicked = {},
+        onDeleteWordClicked = {},
+        onWordClick = {},
     )
 }

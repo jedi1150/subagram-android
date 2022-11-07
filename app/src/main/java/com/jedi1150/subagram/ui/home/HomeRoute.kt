@@ -16,6 +16,7 @@ fun HomeRoute(
         uiState = viewModel.uiState,
         contentPadding = contentPadding,
         onCreateWordClicked = navigateToCreateWord,
-        onWordClicked = navigateToWord
+        onDeleteWordClicked = viewModel::deleteWord,
+        onWordClick = navigateToWord
     )
 }

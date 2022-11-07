@@ -3,7 +3,6 @@ package com.jedi1150.subagram.ui.createWord
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jedi1150.subagram.data.Word
 import com.jedi1150.subagram.ui.home.HomeViewModel
 
@@ -16,7 +15,9 @@ fun CreateWordRoute(
     viewModel.navigateToWord = navigateToWord::invoke
 
     CreateWordScreen(
+        createWordState = viewModel.createWordState,
         contentPadding = contentPadding,
+        onInputChanged = viewModel::changeInput,
         onCreateClicked = viewModel::addWord,
     )
 }

@@ -24,12 +24,12 @@ class Repository @Inject constructor(@ApplicationContext context: Context) : Cor
         }
     }
 
-    suspend fun getWord(uid: Long): WordWithAnagrams? {
-        return withContext(coroutineContext) { db.wordDao().getWordWithAnagrams(uid) }
+    suspend fun getWord(uid: Long): Word? {
+        return withContext(coroutineContext) { db.wordDao().get(uid) }
     }
 
-    fun getWords(): Flow<List<Word>> {
-        return db.wordDao().getAll()
+    suspend fun getWord(value: String): Word? {
+        return withContext(coroutineContext) { db.wordDao().get(value) }
     }
 
     fun getWordsWithAnagrams(): Flow<List<WordWithAnagrams>> {

@@ -9,5 +9,5 @@ data class WordUiState(
     var currentWord: Word = Word(String()),
     val anagrams: Flow<List<Anagram>> = emptyFlow(),
     val input: String = String(),
-    val isError: Boolean = false,
+    val error: AnagramError? = null,
 )

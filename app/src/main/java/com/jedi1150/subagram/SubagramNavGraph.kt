@@ -2,7 +2,6 @@ package com.jedi1150.subagram
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -38,10 +37,13 @@ fun SubagramNavGraph(
                 viewModel = homeViewModel,
                 contentPadding = contentPadding,
                 navigateToCreateWord = {
-                    navController.navigate(Screen.CreateWord.route)
+                    navController.navigate(Screen.CreateWord.route) {
+                        launchSingleTop = true
+                    }
                 },
                 navigateToWord = { word ->
                     navController.navigate(Screen.Word(word.value).route + "/${word.uid}") {
+                        launchSingleTop = true
                         restoreState = true
                     }
                 }
@@ -57,6 +59,7 @@ fun SubagramNavGraph(
                         popUpTo(Screen.Home.route) {
                             saveState = true
                         }
+                        launchSingleTop = true
                         restoreState = true
                     }
                 },
