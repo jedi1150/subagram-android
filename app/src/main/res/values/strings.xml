@@ -1,27 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Subagram</string>
-
     <string name="submit">Submit</string>
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
-
     <string name="delete_word_description">The word will be permanently deleted</string>
-
     <string name="no_words_title">No words yet</string>
     <string name="no_words_description">Add new word</string>
-
     <string name="no_anagrams_title">No anagrams yet</string>
     <string name="no_anagrams_description">Start writing words</string>
-
     <string name="delete_anagram_description">The anagram will be permanently deleted</string>
     <string name="screen_create_word_title">Create word</string>
-
     <string name="create_word_placeholder">New word</string>
     <string name="create_word_error_empty">Enter a word</string>
     <string name="create_word_error_short">Too short</string>
-    <string name="create_word_error_not_single">Enter single word</string>
-    <string name="create_word_support">A single word without spaces and at least 3 chars</string>
-
+    <string name="create_word_error_not_single">Enter a single word</string>
+    <string name="create_word_support">A single word without spaces and at least 3 letters</string>
     <string name="anagram_placeholder">Anagram</string>
     <string name="anagram_error_empty">Enter a word</string>
     <string name="anagram_error_short">Too short</string>
@@ -30,7 +24,6 @@
     <string name="anagram_error_not_anagram">Not an anagram</string>
     <string name="anagram_error_already_exists">Anagram already exists</string>
     <string name="anagram_support">Minimum 2 letters</string>
-
     <string name="anagrams_count">Anagrams: %d</string>
-    <string name="index_position">%d.</string>
+    <string name="index_position" translatable="false">%d.</string>
 </resources>

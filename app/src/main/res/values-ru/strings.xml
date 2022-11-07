@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Subagram</string>
+    <string name="submit">Подтвердить</string>
+    <string name="delete">Удалить</string>
+    <string name="cancel">Отменить</string>
+    <string name="delete_word_description">Слово будет удалено безвозвратно</string>
+    <string name="no_words_title">Слов пока нет</string>
+    <string name="no_words_description">Добавить новое слово</string>
+    <string name="no_anagrams_title">Анаграмм пока нет</string>
+    <string name="no_anagrams_description">Начните писать слова</string>
+    <string name="delete_anagram_description">Анаграмма будет удалена безвозвратно</string>
+    <string name="screen_create_word_title">Создать слово</string>
+    <string name="create_word_placeholder">Новое слово</string>
+    <string name="create_word_error_empty">Введите слово</string>
+    <string name="create_word_error_short">Слишком короткое</string>
+    <string name="create_word_error_not_single">Введите одно слово</string>
+    <string name="create_word_support">Одно слово без пробелов и хотя бы 3 буквы</string>
+    <string name="anagram_placeholder">Анаграмма</string>
+    <string name="anagram_error_empty">Введите слово</string>
+    <string name="anagram_error_short">Слишком короткая</string>
+    <string name="anagram_error_same">То же слово</string>
+    <string name="anagram_error_not_single">Введите одно слово</string>
+    <string name="anagram_error_not_anagram">Не анаграмма</string>
+    <string name="anagram_error_already_exists">Анаграмма уже существует</string>
+    <string name="anagram_support">Минимум 2 буквы</string>
+    <string name="anagrams_count">Анаграмм: %d</string>
+</resources>
