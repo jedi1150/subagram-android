@@ -25,7 +25,7 @@ class HomeViewModel @Inject constructor(private val repository: Repository) : Vi
 
     init {
         viewModelScope.launch {
-            uiState = uiState.copy(words = repository.getWordsWithAnagrams())
+            uiState = uiState.copy(wordsWithAnagrams = repository.getWordsWithAnagrams())
         }
     }
 

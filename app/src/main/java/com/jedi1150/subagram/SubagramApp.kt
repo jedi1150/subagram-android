@@ -12,9 +12,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.jedi1150.subagram.ui.Screen
@@ -25,13 +28,16 @@ import com.jedi1150.subagram.ui.theme.SubagramTheme
 @Composable
 fun SubagramApp() {
     val homeViewModel = hiltViewModel<HomeViewModel>()
-    val words by homeViewModel.uiState.words.collectAsState(initial = emptyList())
+
+    val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
+
+    val wordsWithAnagrams by remember(homeViewModel.uiState.wordsWithAnagrams, lifecycleOwner) { homeViewModel.uiState.wordsWithAnagrams.flowWithLifecycle(lifecycleOwner.lifecycle) }.collectAsState(initial = emptyList())
 
     val navController = rememberNavController()
     val currentDestination by navController.currentBackStackEntryAsState()
     var currentRoute: Screen by remember { mutableStateOf(Screen.Home) }
 
-    val showFab by remember { derivedStateOf { currentDestination?.destination?.route == Screen.Home.route && words.isNotEmpty() } }
+    val showFab by remember { derivedStateOf { currentDestination?.destination?.route == Screen.Home.route && wordsWithAnagrams.isNotEmpty() } }
 
     SubagramTheme {
         Scaffold(

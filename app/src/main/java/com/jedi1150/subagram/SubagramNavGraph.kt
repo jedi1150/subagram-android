@@ -79,7 +79,7 @@ fun SubagramNavGraph(
         }
         composable(Screen.Settings.route) { navBackStackEntry ->
             onRouteChanged(Screen.Settings)
-            SettingsRoute(contentPadding = contentPadding,)
+            SettingsRoute(contentPadding = contentPadding)
         }
     }
 }

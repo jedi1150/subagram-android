@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
 data class HomeUiState(
-    val words: Flow<List<WordWithAnagrams>> = emptyFlow(),
+    val wordsWithAnagrams: Flow<List<WordWithAnagrams>> = emptyFlow(),
 )

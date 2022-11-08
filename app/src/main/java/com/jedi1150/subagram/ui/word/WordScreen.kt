@@ -13,16 +13,19 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.flowWithLifecycle
 import com.jedi1150.subagram.R
 import com.jedi1150.subagram.data.Anagram
 import com.jedi1150.subagram.ui.theme.Typography
 import com.jedi1150.subagram.ui.word.components.AnagramHeader
 import com.jedi1150.subagram.ui.word.components.AnagramItem
 import com.jedi1150.subagram.ui.word.components.InputPanel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.cancel
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
 @Composable
@@ -33,18 +36,34 @@ fun WordScreen(
     onSubmitClicked: () -> Unit,
     onDeleteAnagramClicked: (Anagram) -> Unit,
 ) {
-    val scope = rememberCoroutineScope()
+    val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
+
     val layoutDirection = LocalLayoutDirection.current
 
-    val anagrams by uiState.anagrams.collectAsState(initial = null)
+    val anagrams by remember(uiState.anagrams, lifecycleOwner) { uiState.anagrams.flowWithLifecycle(lifecycleOwner.lifecycle) }.collectAsState(initial = emptyList())
+    var isLoaded by remember { mutableStateOf(false) }
+
     val lazyListState = rememberLazyListState()
-    val lastAnagramIsVisible by remember {
+    val lastAnagramIsVisible by remember(anagrams.size) {
         derivedStateOf {
             lazyListState.layoutInfo.visibleItemsInfo.isEmpty() || lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index == lazyListState.layoutInfo.totalItemsCount - 1
         }
     }
 
     var showDeleteAnagramDialog by remember { mutableStateOf<Anagram?>(null) }
+
+    LaunchedEffect(uiState.anagrams) {
+        uiState.anagrams.collect {
+            isLoaded = true
+            cancel()
+        }
+    }
+
+    LaunchedEffect(anagrams.size) {
+        if (lastAnagramIsVisible) {
+            lazyListState.scrollToItem(anagrams.size)
+        }
+    }
 
     showDeleteAnagramDialog?.let { word ->
         AlertDialog(
@@ -80,67 +99,76 @@ fun WordScreen(
             verticalArrangement = Arrangement.SpaceEvenly,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            AnimatedContent(
-                targetState = anagrams,
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .weight(1f)
                     .padding(top = contentPadding.calculateTopPadding()),
-                transitionSpec = {
-                    fadeIn() with fadeOut()
-                },
-                contentAlignment = Alignment.Center,
-            ) { value ->
-                if (value != null) {
-                    if (value.isNotEmpty()) {
-                        LazyColumn(
-                            state = lazyListState,
-                            contentPadding = PaddingValues(
-                                start = WindowInsets.navigationBars.asPaddingValues().calculateStartPadding(layoutDirection) + WindowInsets.displayCutout.asPaddingValues().calculateStartPadding(layoutDirection),
-                                end = WindowInsets.navigationBars.asPaddingValues().calculateEndPadding(layoutDirection) + WindowInsets.displayCutout.asPaddingValues().calculateEndPadding(layoutDirection),
-                            ),
-                        ) {
-                            stickyHeader {
-                                AnagramHeader(
-                                    value.size,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(8.dp),
-                                )
-                            }
-                            itemsIndexed(value, key = { _, anagram -> anagram.uid }) { index, anagram ->
-                                AnagramItem(
-                                    anagram,
-                                    modifier = Modifier.animateItemPlacement(),
-                                    index = index.plus(1),
-                                    onLongClick = { showDeleteAnagramDialog = anagram },
-                                    onClick = {},
-                                )
+            ) {
+                AnimatedContent(
+                    targetState = isLoaded,
+                    modifier = Modifier.fillMaxSize(),
+                    transitionSpec = { fadeIn() with fadeOut() },
+                    contentAlignment = Alignment.Center,
+                ) { isLoaded ->
+                    if (isLoaded) {
+                        AnimatedContent(
+                            targetState = anagrams.isNotEmpty(),
+                            modifier = Modifier.fillMaxSize(),
+                            transitionSpec = { fadeIn() with fadeOut() },
+                            contentAlignment = Alignment.Center,
+                        ) { notEmpty ->
+                            if (notEmpty) {
+                                LazyColumn(
+                                    state = lazyListState,
+                                    contentPadding = PaddingValues(
+                                        start = WindowInsets.navigationBars.asPaddingValues().calculateStartPadding(layoutDirection) + WindowInsets.displayCutout.asPaddingValues().calculateStartPadding(layoutDirection),
+                                        end = WindowInsets.navigationBars.asPaddingValues().calculateEndPadding(layoutDirection) + WindowInsets.displayCutout.asPaddingValues().calculateEndPadding(layoutDirection),
+                                    ),
+                                ) {
+                                    stickyHeader {
+                                        AnagramHeader(
+                                            anagrams.size,
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(8.dp),
+                                        )
+                                    }
+                                    itemsIndexed(anagrams, key = { _, anagram -> anagram.uid }) { index, anagram ->
+                                        AnagramItem(
+                                            anagram,
+                                            modifier = Modifier.animateItemPlacement(),
+                                            index = index.plus(1),
+                                            onLongClick = { showDeleteAnagramDialog = anagram },
+                                            onClick = {},
+                                        )
+                                    }
+                                }
+                            } else {
+                                Box(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    Column(
+                                        modifier = Modifier.padding(8.dp),
+                                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                    ) {
+                                        Text(
+                                            text = stringResource(R.string.no_anagrams_title),
+                                            style = Typography.headlineLarge,
+                                        )
+                                        Text(
+                                            text = stringResource(R.string.no_anagrams_description),
+                                            style = Typography.bodyLarge,
+                                        )
+                                    }
+                                }
                             }
                         }
                     } else {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            Column(
-                                modifier = Modifier.padding(8.dp),
-                                verticalArrangement = Arrangement.spacedBy(8.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                            ) {
-                                Text(
-                                    text = stringResource(R.string.no_anagrams_title),
-                                    style = Typography.headlineLarge,
-                                )
-                                Text(
-                                    text = stringResource(R.string.no_anagrams_description),
-                                    style = Typography.bodyLarge,
-                                )
-                            }
-                        }
+                        Box(modifier = Modifier.fillMaxSize())
                     }
-                } else {
-                    Box(modifier = Modifier.fillMaxSize())
                 }
             }
 
@@ -149,11 +177,6 @@ fun WordScreen(
                 onInputChanged = onInputChanged,
                 onSubmitClicked = {
                     onSubmitClicked()
-                    if (lastAnagramIsVisible) {
-                        scope.launch {
-                            anagrams?.let { lazyListState.animateScrollToItem(it.size) }
-                        }
-                    }
                 },
                 contentPadding = contentPadding,
             )

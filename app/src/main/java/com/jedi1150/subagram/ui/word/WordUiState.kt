@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
 data class WordUiState(
-    var currentWord: Word = Word(String()),
+    val currentWord: Word = Word(String()),
     val anagrams: Flow<List<Anagram>> = emptyFlow(),
     val input: String = String(),
     val error: AnagramError? = null,
