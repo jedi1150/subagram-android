@@ -1,7 +1,6 @@
 package com.jedi1150.subagram.ui.home
 
 import androidx.compose.animation.*
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -33,7 +32,7 @@ fun HomeScreen(
 ) {
     val layoutDirection = LocalLayoutDirection.current
 
-    val wordsWithAnagrams by uiState.words.collectAsState(initial = emptyList())
+    val wordsWithAnagrams by uiState.words.collectAsState(initial = null)
     val lazyListState = rememberLazyListState()
 
     var showDeleteWordDialog by remember { mutableStateOf<Word?>(null) }
@@ -68,53 +67,59 @@ fun HomeScreen(
 
     Surface(modifier = Modifier.fillMaxSize()) {
         AnimatedContent(
-            targetState = wordsWithAnagrams.isNotEmpty(),
+            targetState = wordsWithAnagrams,
             modifier = Modifier.fillMaxSize(),
             transitionSpec = {
-                fadeIn(animationSpec = tween()) with fadeOut(animationSpec = tween())
+                fadeIn() with fadeOut()
             },
             contentAlignment = Alignment.Center,
         ) { value ->
-            if (value) {
-                LazyColumn(
-                    modifier = Modifier.padding(top = contentPadding.calculateTopPadding()),
-                    state = lazyListState,
-                    contentPadding = PaddingValues(
-                        start = WindowInsets.navigationBars.asPaddingValues().calculateStartPadding(layoutDirection) + WindowInsets.displayCutout.asPaddingValues().calculateStartPadding(layoutDirection),
-                        end = WindowInsets.navigationBars.asPaddingValues().calculateEndPadding(layoutDirection) + WindowInsets.displayCutout.asPaddingValues().calculateEndPadding(layoutDirection),
-                        bottom = contentPadding.calculateBottomPadding(),
-                    ),
-                ) {
-                    items(wordsWithAnagrams, key = { wordWithAnagrams -> wordWithAnagrams.word.uid }) { wordWithAnagrams ->
-                        WordWithAnagramsItem(
-                            wordWithAnagrams,
-                            modifier = Modifier.animateItemPlacement(),
-                            onLongClick = {
-                                showDeleteWordDialog = wordWithAnagrams.word
-                            },
-                            onClick = { onWordClick(wordWithAnagrams.word) },
-                        )
-                    }
-                }
-            } else {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
+            if (value != null) {
+                if (value.isNotEmpty()) {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(top = contentPadding.calculateTopPadding()),
+                        state = lazyListState,
+                        contentPadding = PaddingValues(
+                            start = WindowInsets.navigationBars.asPaddingValues().calculateStartPadding(layoutDirection) + WindowInsets.displayCutout.asPaddingValues().calculateStartPadding(layoutDirection),
+                            end = WindowInsets.navigationBars.asPaddingValues().calculateEndPadding(layoutDirection) + WindowInsets.displayCutout.asPaddingValues().calculateEndPadding(layoutDirection),
+                            bottom = contentPadding.calculateBottomPadding(),
+                        ),
                     ) {
-                        Text(
-                            text = stringResource(R.string.no_words_title),
-                            modifier = Modifier.padding(8.dp),
-                            style = Typography.headlineLarge,
-                        )
-                        FilledTonalButton(onClick = onCreateWordClicked) {
-                            Text(text = stringResource(R.string.no_words_description))
+                        items(value, key = { wordWithAnagrams -> wordWithAnagrams.word.uid }) { wordWithAnagrams ->
+                            WordWithAnagramsItem(
+                                wordWithAnagrams,
+                                modifier = Modifier.animateItemPlacement(),
+                                onLongClick = {
+                                    showDeleteWordDialog = wordWithAnagrams.word
+                                },
+                                onClick = { onWordClick(wordWithAnagrams.word) },
+                            )
+                        }
+                    }
+                } else {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            Text(
+                                text = stringResource(R.string.no_words_title),
+                                modifier = Modifier.padding(8.dp),
+                                style = Typography.headlineLarge,
+                            )
+                            FilledTonalButton(onClick = onCreateWordClicked) {
+                                Text(text = stringResource(R.string.no_words_description))
+                            }
                         }
                     }
                 }
+            } else {
+                Box(modifier = Modifier.fillMaxSize())
             }
         }
     }
