@@ -14,6 +14,7 @@ import com.jedi1150.subagram.ui.Screen
 import com.jedi1150.subagram.ui.createWord.CreateWordRoute
 import com.jedi1150.subagram.ui.home.HomeRoute
 import com.jedi1150.subagram.ui.home.HomeViewModel
+import com.jedi1150.subagram.ui.settings.SettingsRoute
 import com.jedi1150.subagram.ui.word.WordRoute
 import com.jedi1150.subagram.ui.word.WordViewModel
 
@@ -75,6 +76,10 @@ fun SubagramNavGraph(
 
             onRouteChanged(Screen.Word(viewModel.uiState.currentWord.value))
             WordRoute(viewModel = viewModel, contentPadding = contentPadding)
+        }
+        composable(Screen.Settings.route) { navBackStackEntry ->
+            onRouteChanged(Screen.Settings)
+            SettingsRoute(contentPadding = contentPadding,)
         }
     }
 }

@@ -25,4 +25,8 @@
     <string name="anagram_error_already_exists">Анаграмма уже существует</string>
     <string name="anagram_support">Минимум 2 буквы</string>
     <string name="anagrams_count">Анаграмм: %d</string>
+    <string name="screen_settings_title">Настройки</string>
+    <string name="about">Описание</string>
+    <string name="about_description">Составляйте слова из букв выбранного слова. Например, из слова \"фтор\" можно составить слова \"торф\", \"рот\", \"ор\", но нельзя составить слово \"рост\", так как буквы \"с\" нет в слове \"торф\".\n
+        \nСлово \"субаграм\" построено из слов \"субстрат\" и \"анаграмма\".</string>
 </resources>

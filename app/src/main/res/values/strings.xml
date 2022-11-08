@@ -26,4 +26,8 @@
     <string name="anagram_support">Minimum 2 letters</string>
     <string name="anagrams_count">Anagrams: %d</string>
     <string name="index_position" translatable="false">%d.</string>
+    <string name="screen_settings_title">Settings</string>
+    <string name="about">About</string>
+    <string name="about_description">Create words using letters from another word. For example, you can use word \"picture\" create words \"pet\", \"tip\", \"pier\", \"price\" but you can\'t create \"cart\" because there\'s no \"a\" in the \"picture\".\n
+        \nSubagram is built from \"subword\" and \"anagram\".</string>
 </resources>

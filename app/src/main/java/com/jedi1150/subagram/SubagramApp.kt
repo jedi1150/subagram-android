@@ -6,12 +6,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.TransformOrigin
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -38,7 +38,21 @@ fun SubagramApp() {
             modifier = Modifier.fillMaxSize(),
             topBar = {
                 CenterAlignedTopAppBar(
-                    modifier = Modifier.statusBarsPadding().displayCutoutPadding(),
+                    title = {
+                        AnimatedContent(
+                            targetState = currentRoute,
+                            modifier = Modifier.fillMaxWidth(),
+                            transitionSpec = {
+                                fadeIn(animationSpec = tween()) with fadeOut(animationSpec = tween())
+                            },
+                            contentAlignment = Alignment.Center,
+                        ) { route ->
+                            Text(text = route.title, textAlign = TextAlign.Center)
+                        }
+                    },
+                    modifier = Modifier
+                        .statusBarsPadding()
+                        .displayCutoutPadding(),
                     navigationIcon = {
                         Crossfade(targetState = currentDestination) { stackEntry ->
                             if (stackEntry?.destination?.route.toString() != Screen.Home.route) {
@@ -54,16 +68,18 @@ fun SubagramApp() {
                             }
                         }
                     },
-                    title = {
-                        AnimatedContent(
-                            targetState = currentRoute,
-                            modifier = Modifier.fillMaxWidth(),
-                            transitionSpec = {
-                                fadeIn(animationSpec = tween()) with fadeOut(animationSpec = tween())
-                            },
-                            contentAlignment = Alignment.Center,
-                        ) { route ->
-                            Text(text = route.title, textAlign = TextAlign.Center)
+                    actions = {
+                        Crossfade(targetState = currentDestination) { stackEntry ->
+                            if (stackEntry?.destination?.route.toString() != Screen.Settings.route) {
+                                IconButton(onClick = {
+                                    navController.navigate(Screen.Settings.route) {
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
+                                }) {
+                                    Icon(imageVector = Icons.Default.Settings, contentDescription = null)
+                                }
+                            }
                         }
                     },
                 )

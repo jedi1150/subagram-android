@@ -10,4 +10,5 @@ sealed class Screen(
     object Home : Screen("home", getResource.getString(R.string.app_name))
     object CreateWord : Screen("create-word", getResource.getString(R.string.screen_create_word_title))
     data class Word(private val value: String = String()) : Screen("word", title = value)
+    object Settings: Screen("settings", getResource.getString(R.string.screen_settings_title))
 }
