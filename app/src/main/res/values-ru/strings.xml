@@ -24,6 +24,7 @@
     <string name="anagram_error_not_anagram">Не анаграмма</string>
     <string name="anagram_error_already_exists">Анаграмма уже существует</string>
     <string name="anagram_support">Минимум 2 буквы</string>
+    <string name="anagrams">Анаграмм: </string>
     <string name="anagrams_count">Анаграмм: %d</string>
     <string name="screen_settings_title">Настройки</string>
     <string name="about">Описание</string>

@@ -24,6 +24,7 @@
     <string name="anagram_error_not_anagram">Not an anagram</string>
     <string name="anagram_error_already_exists">Anagram already exists</string>
     <string name="anagram_support">Minimum 2 letters</string>
+    <string name="anagrams">Anagrams: </string>
     <string name="anagrams_count">Anagrams: %d</string>
     <string name="index_position" translatable="false">%d.</string>
     <string name="screen_settings_title">Settings</string>
